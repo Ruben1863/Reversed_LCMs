@@ -2,7 +2,7 @@
 /*----------------------------------------------------------------
 * Author : Rubén Espínola (ruben1863@github.com)
 * Contact : rubenes2003@gmail.com
-* Supported device: Itel A32F
+* Supported device: DOOGEE X6
 * Reversed for Αντίσταση στη Ντπ
 * Copyright 2019 © Rubén Espínola
  *---------------------------------------------------------------*/
