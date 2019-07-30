@@ -217,9 +217,9 @@ static struct LCM_setting_table lcm_initialization_setting[] =
 	{0xF3, 1, {0x01}},
 	{0x35, 1, {0x00}},
 	{0x11, 0, {0x00,0x00}},
-    {REGFLAG_DELAY, 120, {0x00}},
+	{REGFLAG_DELAY, 120, {0x00}},
 	{0x29, 0, {0x00,0x00}},
-    {REGFLAG_DELAY, 10, {0x00}},
+	{REGFLAG_DELAY, 10, {0x00}},
 	{REGFLAG_END_OF_TABLE, 0x00, {}}  //Stop cmd is 0xFF
 };
 
@@ -246,12 +246,12 @@ static void push_table(struct LCM_setting_table *table, unsigned int count, unsi
 
 static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
 {
-    memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
+	memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
 
 static void lcm_get_params(LCM_PARAMS *params)
 {
-    memset(params, 0, sizeof(LCM_PARAMS));
+	memset(params, 0, sizeof(LCM_PARAMS));
 
 	params->dsi.packet_size = 512;
 	params->dsi.word_count = 2160;
@@ -306,7 +306,7 @@ static void lcm_suspend(void)
 	dsi_set_cmdq(&data_array, 1, 1);
 	MDELAY(20);
 	data_array[0] = 0x00100500;
-    dsi_set_cmdq(&data_array, 1, 1);
+	dsi_set_cmdq(&data_array, 1, 1);
 	MDELAY(120);
 	SET_RESET_PIN(1);
 	MDELAY(20);
@@ -320,7 +320,7 @@ static void lcm_resume(void)
 
 static unsigned int rgk_lcm_compare_id(void)
 {
-    return 1;
+	return 1;
 }
 
 static unsigned int lcm_ata_check(unsigned char *buffer)
@@ -341,5 +341,5 @@ LCM_DRIVER nt35521_cmi_hd720_5p5_xld_s2609_dg_lcm_drv =
     .suspend        = lcm_suspend,
     .resume         = lcm_init,
     .compare_id     = rgk_lcm_compare_id,
-	.ata_check	    = lcm_ata_check,
+    .ata_check	    = lcm_ata_check,
 };
