@@ -6,3 +6,5 @@ Devices:
 -DOOGEE X6
 
 -Itel A32F
+
+-Symphony P7
