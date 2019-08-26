@@ -684,7 +684,7 @@ static void lcm_suspend(void)
 
 static void lcm_resume(void)
 {
-    lcm_init();
+	lcm_init();
 }
 
 static unsigned int lcm_compare_id(void)
