@@ -5,6 +5,8 @@ Devices:
 
 -DOOGEE X6
 
--Itel A32F
+-Itel A32F (Confirmed working)
 
 -Symphony P7
+
+-Infinix Hot 4 Lite
