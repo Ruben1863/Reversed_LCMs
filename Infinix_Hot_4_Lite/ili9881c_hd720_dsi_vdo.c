@@ -395,7 +395,7 @@ static void lcm_init(void)
 
 static void lcm_suspend(void)
 {
-	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
+	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 
 	SET_RESET_PIN(1);
 	MDELAY(5);
