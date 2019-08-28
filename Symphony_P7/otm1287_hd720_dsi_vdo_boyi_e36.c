@@ -673,6 +673,8 @@ static void lcm_init(void)
 
 static void lcm_suspend(void)
 {
+	unsigned int data_array[16];
+
 	data_array[0] = 2622720;
 	dsi_set_cmdq(data_array, 1, 1);
 	MDELAY(20);
