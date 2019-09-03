@@ -69,7 +69,7 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
     memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
 
-static struct LCM_setting_table lcm_initialization_setting[] = {
+static struct LCM_setting_table lcm_initialization_setting[] =
     
 {
 	{0XFF,3,{0X98,0X81,0X03}},
