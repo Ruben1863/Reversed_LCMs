@@ -340,6 +340,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.vertical_frontporch = 24;
 }
 
+/* 
 static void lcm_init_power(void)
 {
 	MDELAY(10);
@@ -380,6 +381,7 @@ static void lcm_resume_power(void)
 	lcd_enn_bias_setting_(1);
 	MDELAY(5);
 }
+*/
 
 static void lcm_init(void)
 {
