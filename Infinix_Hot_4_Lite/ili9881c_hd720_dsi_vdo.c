@@ -435,7 +435,7 @@ LCM_DRIVER ili9881c_hd720_dsi_vdo_lcm_drv =
     .suspend        = lcm_suspend,
     .resume         = lcm_resume,   
     .compare_id     = lcm_compare_id,
-    .init_power	    = lcm_init_power,
-    .resume_power   = lcm_resume_power,
-    .suspend_power  = lcm_suspend_power,    
+//  .init_power	    = lcm_init_power,
+//  .resume_power   = lcm_resume_power,
+//  .suspend_power  = lcm_suspend_power,    
 };
