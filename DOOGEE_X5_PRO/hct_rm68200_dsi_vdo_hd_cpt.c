@@ -502,7 +502,7 @@ static unsigned int lcm_compare_id(void)
 	read_reg_v2(0xDE, buffer, 1);
 	id_high = buffer[0];
 	
-	read_reg_v2(0xDF, &v3, 1);
+	read_reg_v2(0xDF, buffer, 1);
 	id_low = buffer[0] | (id_high << 8);
 
 	return (LCM_ID == id) ? 1 : 0;
