@@ -25,7 +25,7 @@
 //  Local Variables
 // ---------------------------------------------------------------------------
 
-static LCM_UTIL_FUNCS lcm_util = {0};
+static struct LCM_UTIL_FUNCS lcm_util = {0};
 
 #define SET_RESET_PIN(v) (lcm_util.set_reset_pin((v)))
 #define UDELAY(n) (lcm_util.udelay(n))
@@ -44,7 +44,7 @@ static LCM_UTIL_FUNCS lcm_util = {0};
 #define read_reg(cmd)   lcm_util.dsi_dcs_read_lcm_reg(cmd)
 #define wrtie_cmd(cmd)	lcm_util.dsi_write_cmd(cmd)
 
- struct LCM_setting_table {
+struct LCM_setting_table {
     unsigned cmd;
     unsigned char count;
     unsigned char para_list[64];
@@ -370,14 +370,16 @@ static void push_table(struct LCM_setting_table *table, unsigned int count, unsi
 //  LCM Driver Implementations
 // ---------------------------------------------------------------------------
 
-static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
+static void lcm_set_util_funcs(const struct LCM_UTIL_FUNCS *util)
 {
-    memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
+    memcpy(&lcm_util, util, sizeof(struct LCM_UTIL_FUNCS));
 }
 
 
-static void lcm_get_params(LCM_PARAMS *params)
+static void lcm_get_params(struct LCM_PARAMS *params)
 {
+	memset(params, 0, sizeof(struct LCM_PARAMS));
+	
 	params->type = 2;
 	params->physical_width = 63;
 	params->dsi.data_format.format = 2;
@@ -525,4 +527,3 @@ LCM_DRIVER hct_rm68200_dsi_vdo_hd_cpt_lcm_drv =
     .esd_check      = lcm_esd_check,   
     .esd_recover    = lcm_esd_recover,	
 };
-
