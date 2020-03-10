@@ -71,6 +71,8 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
 
 static void lcm_get_params(LCM_PARAMS *params)
 {
+	memset(params, 0, sizeof(LCM_PARAMS));
+	
 	params->dsi.LANE_NUM = 3;
 	params->dsi.packet_size = 256;
 	params->dsi.vertical_backporch = 16;
