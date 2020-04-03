@@ -244,7 +244,7 @@ static struct LCM_setting_table lcm_initialization_setting[] =
 	{0XD1, 1, {0X5F}},
 	{0XD2, 1, {0X76}},
 	{0XD3, 1, {0X3F}},
-	{0XFF, 3, {0X98,0X81,0X00}},
+	{0XFF, 3, {0X98,0X81}},
 	{0X35, 1, {0X00}},
 	{0X11, 1, {0X00}},
 	{REGFLAG_DELAY, 120, {}},
@@ -264,7 +264,7 @@ static struct LCM_setting_table lcm_deep_sleep_mode_in_setting[] =
 	{0x2F, 1, {0x01}},
 	{REGFLAG_DELAY, 120, {}},
 	{0x2F, 1, {0x00}},
-	{0xFF, 3, {0x98, 0x81, 0x00}},
+	{0xFF, 3, {0x98, 0x81}},
 	{0x2F, 1, {0x00}},
 	{0x28, 0, {0x00}},
 	{REGFLAG_DELAY, 20, {}},
@@ -331,7 +331,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.mode = 1;
 	params->dsi.clk_lp_per_line_enable = 1;
 	params->dbi.te_edge_polarity = 0;
-  params->dsi.data_format.color_order = 0;
+	params->dsi.data_format.color_order = 0;
 	params->dsi.data_format.trans_seq = 0;
 	params->dsi.data_format.padding = 0;
 	params->dsi.intermediat_buffer_num = 0;
@@ -346,6 +346,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 static void lcm_suspend(void)
 {
 	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
+	
 	SET_RESET_PIN(0);
 	MDELAY(20);
 }
