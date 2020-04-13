@@ -18,7 +18,7 @@
 
 
 #define REGFLAG_DELAY             							(0XFE)
-#define REGFLAG_END_OF_TABLE      							(0xFF)
+#define REGFLAG_END_OF_TABLE      							(0x100)
 
 
 // ---------------------------------------------------------------------------
@@ -247,10 +247,10 @@ static struct LCM_setting_table lcm_initialization_setting[] =
 	{0XFF, 3, {0X98,0X81}},
 	{0X35, 1, {0X00}},
 	{0X11, 1, {0X00}},
-	{REGFLAG_DELAY, 120, {}},
+	{REGFLAG_DELAY, 120, {0x00}},
 	{0X29, 1, {0X00}},
-	{REGFLAG_DELAY, 20, {}},
-	{REGFLAG_END_OF_TABLE, 0X00, {}}
+	{REGFLAG_DELAY, 20, {0x00}},
+	{REGFLAG_END_OF_TABLE, 0X00, {0x00}}
 };	
 
 static struct LCM_setting_table lcm_deep_sleep_mode_in_setting[] = 
@@ -306,7 +306,6 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
 {
 	memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
-
 static void lcm_get_params(LCM_PARAMS *params)
 {
 	memset(params, 0, sizeof(LCM_PARAMS));
@@ -331,7 +330,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.mode = 1;
 	params->dsi.clk_lp_per_line_enable = 1;
 	params->dbi.te_edge_polarity = 0;
-	params->dsi.data_format.color_order = 0;
+        params->dsi.data_format.color_order = 0;
 	params->dsi.data_format.trans_seq = 0;
 	params->dsi.data_format.padding = 0;
 	params->dsi.intermediat_buffer_num = 0;
@@ -343,25 +342,35 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.noncont_clock = 0;
 }
 
+
+
+
 static void lcm_suspend(void)
 {
 	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 	
-	SET_RESET_PIN(0);
-	MDELAY(20);
+	SET_RESET_PIN(0); //To try force use the lk driver.
+	MDELAY(20); 
+	
 }
+
+
+
+
 
 static void lcm_init(void)
 {
 	SET_RESET_PIN(1);
 	MDELAY(10);
-	SET_RESET_PIN(0);
+	SET_RESET_PIN(0);	//To try force the lk driver.
 	MDELAY(20);
 	SET_RESET_PIN(1);
 	MDELAY(120);
 
 	push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1);
 }
+
+
 
 static void lcm_resume(void)
 {
