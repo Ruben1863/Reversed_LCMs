@@ -1,10 +1,10 @@
 
-/*----------------------------------------------------------------
-* Author : Rubén Espínola (ruben1863@github.com)
+/*-------------------------------------------------------------------------------------------
+* Author : Rubén Espínola (ruben1863@github.com) and Αντίσταση στη Ντπ (Ntouris3@github.com)
 * Contact : rubenes2003@gmail.com
 * Supported device: CUBOT R9
 * Copyright 2019 © Rubén Espínola
- *---------------------------------------------------------------*/
+ *------------------------------------------------------------------------------------------*/
 
 #include "lcm_drv.h"
 
@@ -14,8 +14,6 @@
 
 #define FRAME_WIDTH                                         (720)
 #define FRAME_HEIGHT                                        (1280)
-
-
 
 #define REGFLAG_DELAY             							(0XFE)
 #define REGFLAG_END_OF_TABLE      							(0x100)
@@ -44,10 +42,10 @@ static LCM_UTIL_FUNCS lcm_util = {0};
 #define read_reg(cmd)   lcm_util.dsi_dcs_read_lcm_reg(cmd)
 #define wrtie_cmd(cmd)	lcm_util.dsi_write_cmd(cmd)
 
- struct LCM_setting_table {
-    unsigned cmd;
-    unsigned char count;
-    unsigned char para_list[64];
+struct LCM_setting_table {
+        unsigned cmd;
+        unsigned char count;
+        unsigned char para_list[64];
 };
 
 static struct LCM_setting_table lcm_initialization_setting[] =  
@@ -306,6 +304,7 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
 {
 	memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
+
 static void lcm_get_params(LCM_PARAMS *params)
 {
 	memset(params, 0, sizeof(LCM_PARAMS));
@@ -342,27 +341,19 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.noncont_clock = 0;
 }
 
-
-
-
 static void lcm_suspend(void)
 {
 	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 	
-	SET_RESET_PIN(0); //To try force use the lk driver.
+	SET_RESET_PIN(0);
 	MDELAY(20); 
-	
 }
-
-
-
-
 
 static void lcm_init(void)
 {
 	SET_RESET_PIN(1);
 	MDELAY(10);
-	SET_RESET_PIN(0);	//To try force the lk driver.
+	SET_RESET_PIN(0);
 	MDELAY(20);
 	SET_RESET_PIN(1);
 	MDELAY(120);
@@ -370,11 +361,9 @@ static void lcm_init(void)
 	push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1);
 }
 
-
-
 static void lcm_resume(void)
 {
-    lcm_init();
+        lcm_init();
 }
 
 static void lcm_init_power(void)
