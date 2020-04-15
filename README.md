@@ -9,8 +9,6 @@ Devices:
 
 -Symphony P7
 
--Infinix Hot 4 Lite
-
 -DOOGEE X5 PRO (Confirmed working)
 
 -CUBOT R9 (Confirmed working)
