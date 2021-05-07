@@ -97,6 +97,17 @@ static struct pinctrl_state *lcd_rst_low;
 
 static void lcm_set_rst_output(int val)
 {
+	if (val == 0) {
+		pinctrl_select_state(lcmctrl, lcd_rst_low);
+	} else {
+		pinctrl_select_state(lcmctrl, lcd_rst_high);
+	}
+
+}
+
+/* Disable this for now
+static void lcm_set_rst_output(int val)
+{
 	if (strstr(AUTHOR, "RUBEN1863") == 0){
 		if (val == 0) {
 			pinctrl_select_state(lcmctrl, lcd_rst_low);
@@ -109,7 +120,7 @@ static void lcm_set_rst_output(int val)
 		printk("You removed authorship! >:( \n");
 	}
 }
-
+*/
 
 // ---------------------------------------------------------------------------
 //  LCM Driver Implementations
