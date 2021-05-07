@@ -13,3 +13,4 @@ Devices:
 
 -CUBOT R9 (Confirmed working)
 
+-Intex Cloud Q11
