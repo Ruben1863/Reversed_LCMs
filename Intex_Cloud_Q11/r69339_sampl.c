@@ -5,7 +5,8 @@
 * Supported device: Intex Cloud Q11
 * Copyright 2021 © Rub3n1863
  *---------------------------------------------------------------*/
- 
+
+#include <string.h>
 #include <linux/gpio.h>
 #include <linux/pinctrl/consumer.h>
 #include "lcm_drv.h"
@@ -27,13 +28,13 @@
 //  Local Constants
 // ---------------------------------------------------------------------------
 
-#define FRAME_HEIGHT                                        (1280)
-#define FRAME_WIDTH                                         (720)
+#define FRAME_HEIGHT                                    (1280)
+#define FRAME_WIDTH                                     (720)
 
-#define REGFLAG_DELAY             							            (0XFC)
-#define REGFLAG_END_OF_TABLE      							            (0xFD)
+#define REGFLAG_DELAY             			(0XFC)
+#define REGFLAG_END_OF_TABLE      			(0xFD)
 
-#define AUTHOR												                      "RUBEN1863"
+#define AUTHOR						"RUBEN1863"
 
 // ---------------------------------------------------------------------------
 //  Local Variables
@@ -96,7 +97,7 @@ static struct pinctrl_state *lcd_rst_low;
 
 static void lcm_set_rst_output(int val)
 {
-	if (AUTHOR == "RUBEN1863"){
+	if (strstr(AUTHOR, "RUBEN1863") == 0){
 		if (val == 0) {
 			pinctrl_select_state(lcmctrl, lcd_rst_low);
 		} else {
