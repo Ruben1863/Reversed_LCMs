@@ -454,10 +454,10 @@ static unsigned int rgk_lcm_compare_id(void) {
 
 	res = IMM_GetOneChannelValue(AUXADC_LCM_VOLTAGE_CHANNEL,data,&rawdata);
 
-	if (res < 0) || (lcm_vol = 10 * unknown + 1000 * data, printk([adc_kernel]: lcm_vol= 0x%x, lcm_vol), lcm_vol > 0x64)
-    {
+	if (res < 0 || (lcm_vol = 10 * unknown + 1000 * data, printk([adc_kernel]: lcm_vol= 0x%x, lcm_vol), lcm_vol > 0x64))
+    	{
 		return 0;   
-    }
+    	}
 		else
 	{
 		SET_RESET_PIN(1);
