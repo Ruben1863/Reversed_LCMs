@@ -23,7 +23,7 @@
 //  Local Variables
 // ---------------------------------------------------------------------------
 
-static struct LCM_UTIL_FUNCS lcm_util = {0};
+static LCM_UTIL_FUNCS lcm_util = { 0 };
 
 #define SET_RESET_PIN(v) (lcm_util.set_reset_pin((v)))
 #define UDELAY(n) (lcm_util.udelay(n))
@@ -366,14 +366,14 @@ static void push_table(struct LCM_setting_table *table, unsigned int count, unsi
 //  LCM Driver Implementations
 // ---------------------------------------------------------------------------
 
-static void lcm_set_util_funcs(const struct LCM_UTIL_FUNCS *util)
+static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
 {
-    memcpy(&lcm_util, util, sizeof(struct LCM_UTIL_FUNCS));
+	memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
 
-static void lcm_get_params(struct LCM_PARAMS *params)
+static void lcm_get_params(LCM_PARAMS *params)
 {
-	memset(params, 0, sizeof(struct LCM_PARAMS));
+	memset(params, 0, sizeof(LCM_PARAMS));
 	
 	params->physical_width = 63;
 	params->physical_height = 110;
@@ -446,7 +446,7 @@ static unsigned int rgk_lcm_compare_id(void) {
 	int unknown = 0;
 	
 	
-	unsigned int data_data_array[16];
+	unsigned int data_array[16];
 	int res = 0;
 	unsigned char buffer[5];
 	unsigned char id_high = 0;
@@ -489,7 +489,7 @@ static unsigned int rgk_lcm_compare_id(void) {
 
 static unsigned int lcm_ata_check(unsigned char *buffer)
 {
-	unsigned int data_data_array[16];
+	unsigned int data_array[16];
 	unsigned char buffer[5];
 	unsigned char buffer_2[5];
 	unsigned char id = 0;
@@ -542,5 +542,5 @@ LCM_DRIVER rm68200_auo_hd720_5p0_ry_t591_otd_lcm_drv =
     .suspend        = lcm_suspend,
     .resume         = lcm_resume,   
     .compare_id     = rgk_lcm_compare_id,
-	.ata_check      = lcm_ata_check,
+    .ata_check      = lcm_ata_check,
 };
