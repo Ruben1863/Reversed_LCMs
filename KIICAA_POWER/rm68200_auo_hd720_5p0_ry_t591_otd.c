@@ -454,12 +454,17 @@ static unsigned int rgk_lcm_compare_id(void) {
 
 	res = IMM_GetOneChannelValue(AUXADC_LCM_VOLTAGE_CHANNEL,data,&rawdata);
 
-	if (res < 0 || (lcm_vol = 10 * unknown + 1000 * data, printk([adc_kernel]: lcm_vol= 0x%x, lcm_vol), lcm_vol > 0x64))
+	if (res < 0)
     	{
-		return 0;   
+		    return 0;   
     	}
-		else
-	{
+
+    lcm_vol = 10 * unknown + 1000 * data[0];
+    printk("[adc_kernel]: lcm_vol= %d\n", lcm_vol);
+
+    if (lcm_vol > 0x64)
+    {
+
 		SET_RESET_PIN(1);
 		MDELAY(10);
 		SET_RESET_PIN(0);
@@ -467,7 +472,7 @@ static unsigned int rgk_lcm_compare_id(void) {
 		SET_RESET_PIN(1);
 		MDELAY(200);
 		
-		data_data_array[0] = 0x1FE1500;
+		data_array[0] = 0x1FE1500;
 		dsi_set_cmdq(data_array, 1, 1);
 		
 		data_array[1] = 0x13700;
@@ -485,13 +490,14 @@ static unsigned int rgk_lcm_compare_id(void) {
 		
 		return id_low == 26656;
 	}
+    return 0;
 }
 
 static unsigned int lcm_ata_check(unsigned char *buffer)
 {
 	unsigned int data_array[16];
-	unsigned char buffer[5];
-	unsigned char buffer_2[5];
+	unsigned char buff[5];
+	unsigned char buff_2[5];
 	unsigned char id = 0;
 	
 	data_array[0] = 0x1FE1500;
@@ -504,7 +510,7 @@ static unsigned int lcm_ata_check(unsigned char *buffer)
 	atomic_set(&ESDCheck_byCPU,1); 
 
 	
-	read_reg_v2(0xDE, buffer, 1);
+	read_reg_v2(0xDE, buff, 1);
 	
 //	vC11A42F8 = 0;
 	atomic_set(&ESDCheck_byCPU,0);
@@ -515,8 +521,8 @@ static unsigned int lcm_ata_check(unsigned char *buffer)
 //	vC11A42F8 = 1;
 	atomic_set(&ESDCheck_byCPU,1);
 
-	read_reg_v2(0xDF, buffer_2, 1);
-	id = buffer | (buffer_2 << 8);
+	read_reg_v2(0xDF, buff_2, 1);
+	id = buff[0] | (buff_2[0] << 8);
 	data_array[3] = 0xFE1500;
 	
 //	vC11A42F8 = 0;
