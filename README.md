@@ -14,3 +14,5 @@ Devices:
 -CUBOT R9 (Confirmed working)
 
 -Intex Cloud Q11
+
+-ARCHOS AC50FNEV2 (Confirmed working)
