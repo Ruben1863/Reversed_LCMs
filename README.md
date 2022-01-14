@@ -16,3 +16,5 @@ Devices:
 -Intex Cloud Q11
 
 -ARCHOS AC50FNEV2 (Confirmed working)
+
+-Xiaomi Redmi Note 4 Nikel (Confirmed working)
