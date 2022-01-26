@@ -29,7 +29,7 @@
 #define FRAME_HEIGHT					(1920)
 
 #define REGFLAG_DELAY             			(0XFC)
-#define REGFLAG_END_OF_TABLE      			(0xFF)
+#define REGFLAG_END_OF_TABLE      			(0xFD)
 
 #define LCM_ID						(0x32)
 
@@ -80,7 +80,7 @@ struct LCM_setting_table {
 
 static struct LCM_setting_table lcm_initialization_setting[] = {
 
-	{0XFF, 1, {0X00,0X01,0X01}},
+	{0XFF, 1, {0X01}},
 	{REGFLAG_DELAY, 1, {}},
 	{0XFB, 1, {0X01}},
 	{0X00, 1, {0X01}},
@@ -632,43 +632,43 @@ static struct LCM_setting_table lcm_initialization_setting[] = {
 	{0XD3, 1, {0X12}},
 	{0XD4, 1, {0X16}},
 	{0X35, 1, {0X00}},
-	{0X11, 0, {0X00,0X00}},
+	{0X11, 0, {}},
 	{REGFLAG_DELAY, 120, {}},
-	{0X29, 0, {0X00,0X00}},
+	{0X29, 0, {}},
 	{REGFLAG_DELAY, 20, {}},
 	{REGFLAG_END_OF_TABLE, 0X00, {}}
-};	
+};
 
-static struct LCM_setting_table lcm_deep_sleep_mode_in_setting[] = 
+static struct LCM_setting_table lcm_deep_sleep_mode_in_setting[] =
 {
-	{0x28, 0, {0x00}},
+	{0x28, 0, {}},
 	{REGFLAG_DELAY, 100, {}},
-	{0x10, 0, {0x00}},
+	{0x10, 0, {}},
 	{REGFLAG_DELAY, 120, {}},
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
-static struct LCM_setting_table lcm_cabc_on_setting[]= 
+static struct LCM_setting_table lcm_cabc_on_setting[]=
 {
 	{0x55, 1, {0x01}},
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
-static struct LCM_setting_table lcm_cabc_off_setting[] = 
+static struct LCM_setting_table lcm_cabc_off_setting[] =
 {
 	{0x55, 1, {0x00}},
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
-static struct LCM_setting_table lcm_backlight_level_setting[] = 
+static struct LCM_setting_table lcm_backlight_level_setting[] =
 {
 	{0x51, 1, {0xFF}},
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
 static struct LCM_setting_table lcm_cabc_on_initialization_setting[] = {
-	
-	{0xff, 1, {0x00,0x01,0x01}},
+
+	{0xff, 1, {0x01}},
 	{0xfb, 1, {0x01}},
 	{0x00, 1, {0x01}},
 	{0x01, 1, {0x55}},
@@ -1154,27 +1154,27 @@ static struct LCM_setting_table lcm_cabc_on_initialization_setting[] = {
 	{0x51, 1, {0x20}},
 	{0x53, 1, {0x24}},
 	{0x55, 1, {0x00}},
-	{0x11, 0, {0x00,0x00}},
+	{0x11, 0, {}},
 	{REGFLAG_DELAY, 120, {}},
-	{0x29, 0, {0x00,0x00}},
-	{REGFLAG_DELAY, 20, {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}},
+	{0x29, 0, {}},
+	{REGFLAG_DELAY, 20, {}},
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
 static void push_table(struct LCM_setting_table *table, unsigned int count, unsigned char force_update)
 {
 	unsigned int i;
-	
+
 	for(i = 0; i < count; i++) {
 		unsigned cmd;
 		cmd = table[i].cmd;
-		
+
 		switch (cmd) {
 			case REGFLAG_DELAY :
 				MDELAY(table[i].count);
 				break;
 			case REGFLAG_END_OF_TABLE :
-				break; 
+				break;
 			default:
 				dsi_set_cmdq_V2(cmd, table[i].count, table[i].para_list, force_update);
         }
@@ -1196,7 +1196,7 @@ int read_boardid(void)
 	int id = 0;
 	result = strstr(saved_command_line, "BoardID=");
 
-	if (result) 
+	if (result)
 	{
 		id = result[8] - '0';
 		return ((id > 9) ? 0 : id);
@@ -1231,7 +1231,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.customization_esd_check_enable = 0;
 	params->dsi.ssc_disable = 1;
 	params->dsi.esd_check_enable = 1;
-	  
+
 	if (read_boardid() == 3)
 	{
 		printk("boardid  is 3\n");
@@ -1253,18 +1253,18 @@ static void tps65132_enable(void)
 	int ret1 = 0;
 	int ret2 = 0;
 	int num = 0;
-	
+
 	mt_set_gpio_mode(GPIO_LCD_BIAS_ENN_PIN, GPIO_MODE_00);
 	mt_set_gpio_dir(GPIO_LCD_BIAS_ENN_PIN, GPIO_DIR_OUT);
 	ret1 = mt_set_gpio_out(GPIO_LCD_BIAS_ENN_PIN, GPIO_OUT_ONE);
 	MDELAY(12);
-	
+
 	mt_set_gpio_mode(GPIO_LCD_BIAS_ENP_PIN, GPIO_MODE_00);
 	mt_set_gpio_dir(GPIO_LCD_BIAS_ENP_PIN, GPIO_DIR_OUT);
 	ret2 = mt_set_gpio_out(GPIO_LCD_BIAS_ENP_PIN, GPIO_OUT_ONE);
 
 	printk("tps65132_enable, ret1 =%d, ret2 =%d\n", ret1, ret2);
-	
+
 	for(num = 0; num < 3; num++)
 	{
 		ret = tps65132_write_bytes(0x00,0x0f);
@@ -1281,7 +1281,7 @@ static void tps65132_enable(void)
 	}
 
 	for(num = 0; num < 3; num++)
-	{	
+	{
 		ret = tps65132_write_bytes(0x01,0x0f);
 		if(ret < 0)
 		{
@@ -1309,7 +1309,7 @@ static void lcm_init(void)
 	MDELAY(20);
 	mt_set_gpio_out(GPIO_LCD_RESET_PIN, GPIO_OUT_ONE);
 	MDELAY(20);
-	
+
 	push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1); // FF 00 00 00 01 01
 }
 
@@ -1317,11 +1317,17 @@ static void lcm_suspend(void)
 {
 	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 	printk("[KERNEL]nt35532--boe--tps65132_enable-----sleep--\n");
-	
+
+	mt_set_gpio_mode(GPIO_LCD_BIAS_ENN_PIN, GPIO_MODE_00);
+	mt_set_gpio_dir(GPIO_LCD_BIAS_ENN_PIN, GPIO_DIR_OUT);
 	mt_set_gpio_out(GPIO_LCD_BIAS_ENN_PIN, GPIO_OUT_ZERO); // 0xFFFFFFC001715B68
 	MDELAY(12);
+	mt_set_gpio_mode(GPIO_LCD_BIAS_ENP_PIN, GPIO_MODE_00);
+	mt_set_gpio_dir(GPIO_LCD_BIAS_ENP_PIN, GPIO_DIR_OUT);
 	mt_set_gpio_out(GPIO_LCD_BIAS_ENP_PIN, GPIO_OUT_ZERO); // 0xFFFFFFC001715AA8
 	MDELAY(10);
+	mt_set_gpio_mode(GPIO_LCD_RESET_PIN, GPIO_MODE_00);
+	mt_set_gpio_dir(GPIO_LCD_RESET_PIN, GPIO_DIR_OUT);
 	mt_set_gpio_out(GPIO_LCD_RESET_PIN, GPIO_OUT_ZERO);
 }
 
@@ -1329,7 +1335,7 @@ static void lcm_resume(void)
 {
 	static unsigned int backlight_array_num = 0;
 	static unsigned int lcm_initialization_count = 0;
-	
+
 	if(cabc_enable_flag == 0)
 	{
 		lcm_initialization_count = sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table);
@@ -1352,10 +1358,10 @@ static void lcm_resume(void)
 			}
 		}
 	}
-  
+
 	printk("lcm_resume, lcm_initialization_count=%d, backlight_array_num=%d\n", lcm_initialization_count, backlight_array_num);
 	tps65132_enable();
-  
+
 	MDELAY(15);
 	mt_set_gpio_mode(GPIO_LCD_RESET_PIN, GPIO_MODE_00);
 	mt_set_gpio_dir(GPIO_LCD_RESET_PIN, GPIO_DIR_OUT);
@@ -1369,40 +1375,37 @@ static void lcm_resume(void)
 	MDELAY(5);
 	mt_set_gpio_out(GPIO_LCD_RESET_PIN, GPIO_OUT_ONE);
 	MDELAY(20);
-  
-	if ( cabc_enable_flag )
-	{
-		if ( last_backlight_level > 32 )
-		{
-			if ( backlight_array_num )
-				lcm_cabc_on_initialization_setting[backlight_array_num].para_list[0] = 32;
+
+	if(cabc_enable_flag == 0) {
+		if(last_backlight_level <= 32) {
+			if(backlight_array_num != 0) {
+				lcm_initialization_setting[backlight_array_num].para_list[0] = last_backlight_level;
+			}
+		} else {
+			if(backlight_array_num != 0) {
+				lcm_initialization_setting[backlight_array_num].para_list[0] = 32;
+			}
 		}
-		else if ( backlight_array_num )
-		{
-			lcm_cabc_on_initialization_setting[backlight_array_num].para_list[0] = last_backlight_level;
+		push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1);
+	} else {
+		if(last_backlight_level <= 32) {
+			if(backlight_array_num != 0) {
+				lcm_cabc_on_initialization_setting[backlight_array_num].para_list[0] = last_backlight_level;
+			}
+		} else {
+			if(backlight_array_num != 0) {
+				lcm_cabc_on_initialization_setting[backlight_array_num].para_list[0] = 32;
+			}
 		}
 		push_table(lcm_cabc_on_initialization_setting, sizeof(lcm_cabc_on_initialization_setting) / sizeof(struct LCM_setting_table), 1);
 	}
-	else
-	{
-		if ( last_backlight_level > 32 )
-		{
-			if ( backlight_array_num )
-				lcm_initialization_setting[backlight_array_num].para_list[0] = 32;
-		}
-		else if ( backlight_array_num )
-		{
-			lcm_initialization_setting[backlight_array_num].para_list[0] = last_backlight_level;
-		}
-		push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1);
-	}
 }
 static unsigned int lcm_compare_id(void) {
-	
+
 	unsigned char buffer[8];
-	unsigned int array[16];  
+	unsigned int array[16];
 	unsigned int id = 0;
-	
+
 	mt_set_gpio_mode(GPIO_LCD_RESET_PIN, GPIO_MODE_00);
 	mt_set_gpio_dir(GPIO_LCD_RESET_PIN, GPIO_DIR_OUT);
 	mt_set_gpio_out(GPIO_LCD_RESET_PIN, GPIO_OUT_ONE);
@@ -1411,22 +1414,22 @@ static unsigned int lcm_compare_id(void) {
 	MDELAY(20);
 	mt_set_gpio_out(GPIO_LCD_RESET_PIN, GPIO_OUT_ONE);
 	MDELAY(20);
-	  
+
 
 	array[0] = 0x00023700;
 	dsi_set_cmdq(array, 1, 1);
 
 	array[0] = 0x00ff1500;
 	dsi_set_cmdq(array, 1, 1);
-	  
+
 	array[0] = 0x01fb1500;
 	dsi_set_cmdq(array, 1, 1);
 	MDELAY(10);
 	read_reg_v2(0xF4, buffer, 1);
 	MDELAY(20);
-	  
+
 	id = buffer[0];
-	  
+
 	return (LCM_ID == id) ? 1 : 0;
 }
 
@@ -1447,12 +1450,12 @@ static void lcm_setbacklight_cmdq(void* handle,unsigned int level)
 	unsigned int mapped_level = 0;
 
 	mapped_level = level;
-	  
+
 	if ( mapped_level )
 	{
 		if ( mapped_level > 0xFF )
 		mapped_level = 255;
-	
+
 		last_backlight_level = mapped_level;
 		mt_set_gpio_mode(GPIO_LCD_BL_EN_PIN, GPIO_MODE_00);
 		mt_set_gpio_dir(GPIO_LCD_BL_EN_PIN, GPIO_DIR_OUT);
@@ -1465,7 +1468,7 @@ static void lcm_setbacklight_cmdq(void* handle,unsigned int level)
 		mt_set_gpio_out(GPIO_LCD_BL_EN_PIN, GPIO_OUT_ZERO);
 		MDELAY(30);
 	}
-	  
+
 	lcm_backlight_level_setting[0].para_list[0] = mapped_level;
 	push_table(lcm_backlight_level_setting, sizeof(lcm_backlight_level_setting) / sizeof(struct LCM_setting_table), 1);
 }
@@ -1481,7 +1484,7 @@ LCM_DRIVER nt35532_fhd_boe_vdo_lcm_drv =
 	.get_params     	= lcm_get_params,
  	.init           	= lcm_init,
 	.suspend       	 	= lcm_suspend,
-	.resume			= lcm_resume,   
+	.resume			= lcm_resume,
 	.compare_id		= lcm_compare_id,
 	.set_backlight_cmdq	= lcm_setbacklight_cmdq,
 	.enable_cabc_cmdq	= lcm_cabc_enable_cmdq,
