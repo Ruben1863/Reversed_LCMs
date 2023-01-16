@@ -186,6 +186,7 @@ MODULE_LICENSE("GPL");
 
 extern char* saved_command_line;
 extern int cabc_enable_flag;
+extern int lct_read_boardid(void);
 
 static unsigned int last_backlight_level = 0;
 
@@ -207,12 +208,10 @@ static LCM_UTIL_FUNCS lcm_util = { 0 };
 #define read_reg(cmd)   lcm_util.dsi_dcs_read_lcm_reg(cmd)
 #define wrtie_cmd(cmd)	lcm_util.dsi_write_cmd(cmd)
 
-//rn4x
 #define set_gpio_lcd_enp(cmd)	lcm_util.set_gpio_lcd_enp_bias(cmd)
 #define set_gpio_lcd_enn(cmd)	lcm_util.set_gpio_lcd_enn_bias(cmd)
 #define set_gpio_lcd_bl(cmd)	lcm_util.set_gpio_lcd_backlight_en(cmd)
 #define set_gpio_lcd_pwr(cmd)	lcm_util.set_gpio_lcd_pwr_en(cmd)
-//end
 
 struct LCM_setting_table {
     unsigned cmd;
@@ -220,7 +219,8 @@ struct LCM_setting_table {
     unsigned char para_list[64];
 };
 
-static struct LCM_setting_table lcm_initialization_setting[] = {
+static struct LCM_setting_table lcm_initialization_setting[] = 
+{
 	{0XFF, 1, {0X01}},
 	{REGFLAG_DELAY, 1, {}},
 	{0XFB, 1, {0X01}},
@@ -789,7 +789,7 @@ static struct LCM_setting_table lcm_deep_sleep_mode_in_setting[] =
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
-static struct LCM_setting_table lcm_cabc_on_setting[]=
+static struct LCM_setting_table lcm_cabc_on_setting[] =
 {
 	{0x55, 1, {0x01}},
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
@@ -807,7 +807,8 @@ static struct LCM_setting_table lcm_backlight_level_setting[] =
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
-static struct LCM_setting_table lcm_cabc_on_initialization_setting[] = {
+static struct LCM_setting_table lcm_cabc_on_initialization_setting[] = 
+{
 	{0XFF, 1, {0X01}},
 	{REGFLAG_DELAY, 1, {}},
 	{0XFB, 1, {0X01}},
@@ -1396,26 +1397,8 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
 	memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
 
-/*
-int read_boardid(void)
-{
-	char *result;
-	int id = 0;
-	result = strstr(saved_command_line, "BoardID=");
-
-	if (result)
-	{
-		id = result[8] - '0';
-		return ((id > 9) ? 0 : id);
-    }
-    return id;
-}
-*/
-
 static void lcm_get_params(LCM_PARAMS *params)
 {
-    printk("Enter LCM Params\n");
-
 	memset(params, 0, sizeof(LCM_PARAMS));
 
 	params->module = "BOE";
@@ -1446,81 +1429,47 @@ static void lcm_get_params(LCM_PARAMS *params)
 	params->dsi.horizontal_frontporch = 90;
 	params->dsi.PLL_CLOCK = 448;
 	
-	/*
-	if (read_boardid() == 3)
-	{
-		printk("boardid  is 3\n");
-		params->dsi.horizontal_backporch = 30;
-		params->dsi.horizontal_frontporch = 90;
-		params->dsi.PLL_CLOCK = 448;
-	}
-	else
-	{
-		params->dsi.horizontal_backporch = 95;
-		params->dsi.horizontal_frontporch = 95;
-		params->dsi.PLL_CLOCK = 481;
-	}
-	*/
+	printk("[READ_BOARDID] BoardID = %d", lct_read_boardid());
 }
 
-static void tps65132_enable(int en)
+static void tps65132_enable(void)
 {
 	int ret = 0;
 	int ret1 = 0;
 	int ret2 = 0;
 	int num = 0;
+			
+	ret1 = set_gpio_lcd_enn(1);
+	MDELAY(12);
+	ret2 = set_gpio_lcd_enp(1);
 
-	if (en)
-	{			
-		ret1 = set_gpio_lcd_enn(1);
-		MDELAY(12);
-		ret2 = set_gpio_lcd_enp(1);
-
-		printk("tps65132_enable, ret1 =%d, ret2 =%d\n", ret1, ret2);
-		for(num = 0; num < 3; num++)
-		{	
-			ret = tps65132_write_bytes(0x00,0x0f);
-			if(ret < 0)
-			{
-				printk("nt35532--boe--tps65132_enable-cmd=0x00-- i2c write error-num=%d\n", num);
-				MDELAY(5);
-			}
-			else
-			{
-				printk("nt35532--boe--tps65132_enable-cmd=0x00-- i2c write success-num=%d\n", num);
-				break;
-			}
-		}
-
-		for(num = 0; num < 3; num++)
-		{	
-			ret = tps65132_write_bytes(0x01,0x0f);
-			if(ret < 0)
-			{
-				printk("nt35532--boe--tps65132_enable-cmd=0x01-- i2c write error-num=%d\n", num);
-				MDELAY(5);
-			}
-			else
-			{
-				printk("nt35532--boe--tps65132_enable-cmd=0x01-- i2c write success-num=%d\n", num);
-				break;
-			}
+	printk("tps65132_enable, ret1 =%d, ret2 =%d\n", ret1, ret2);
+	for(num = 0; num < 3; num++) {	
+		ret = tps65132_write_bytes(0x00, 0x0f);
+		if(ret < 0) {
+			printk("nt35532--boe--tps65132_enable-cmd=0x00-- i2c write error-num=%d\n", num);
+			MDELAY(5);
+		} else {
+			printk("nt35532--boe--tps65132_enable-cmd=0x00-- i2c write success-num=%d\n", num);
+			break;
 		}
 	}
-	else
-	{
-		printk("[KERNEL]nt35532--boe--tps65132_enable-----sleep--\n");
-		set_gpio_lcd_enn(0);
-		MDELAY(12);
-		set_gpio_lcd_enp(0);
+
+	for(num = 0; num < 3; num++) {	
+		ret = tps65132_write_bytes(0x01, 0x0f);
+		if(ret < 0) {
+			printk("nt35532--boe--tps65132_enable-cmd=0x01-- i2c write error-num=%d\n", num);
+			MDELAY(5);
+		} else {
+			printk("nt35532--boe--tps65132_enable-cmd=0x01-- i2c write success-num=%d\n", num);
+			break;
+		}
 	}
 }
 
 static void lcm_init(void)
 {
-    printk("Enter LCM Init\n");
-
-	tps65132_enable(1);
+	tps65132_enable();
 	
 	MDELAY(10);
 	SET_RESET_PIN(1);
@@ -1535,11 +1484,10 @@ static void lcm_init(void)
 
 static void lcm_suspend(void)
 {
-    printk("Enter LCM Suspend\n");
 	push_table(lcm_deep_sleep_mode_in_setting, sizeof(lcm_deep_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 	
 	printk("[KERNEL]nt35532--boe--tps65132_enable-----sleep--\n");
-
+	
 	set_gpio_lcd_enn(0);
 	MDELAY(12);
 	set_gpio_lcd_enp(0);
@@ -1552,33 +1500,24 @@ static void lcm_resume(void)
 	static unsigned int backlight_array_num = 0;
 	static unsigned int lcm_initialization_count = 0;
 
-    printk("Enter LCM Resume\n");
-
-	if(cabc_enable_flag == 0)
-	{
+	if(cabc_enable_flag == 0) {
 		lcm_initialization_count = sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table);
-		for(backlight_array_num = lcm_initialization_count - 1; backlight_array_num >= 0; backlight_array_num--)
-		{
-			if(0x51 == lcm_initialization_setting[backlight_array_num].cmd)
-			{
+		for(backlight_array_num = lcm_initialization_count - 1; backlight_array_num >= 0; backlight_array_num--) {
+			if(0x51 == lcm_initialization_setting[backlight_array_num].cmd) {
 				break;
 			}
 		}
-	}
-	else
-	{
+	} else {
 		lcm_initialization_count = sizeof(lcm_cabc_on_initialization_setting) / sizeof(struct LCM_setting_table);
-		for(backlight_array_num = lcm_initialization_count - 1; backlight_array_num >= 0; backlight_array_num--)
-		{
-			if(0x51 == lcm_cabc_on_initialization_setting[backlight_array_num].cmd)
-			{
+		for(backlight_array_num = lcm_initialization_count - 1; backlight_array_num >= 0; backlight_array_num--) {
+			if(0x51 == lcm_cabc_on_initialization_setting[backlight_array_num].cmd) {
 				break;
 			}
 		}
 	}
 
 	printk("lcm_resume, lcm_initialization_count=%d, backlight_array_num=%d\n", lcm_initialization_count, backlight_array_num);
-	tps65132_enable(1);
+	tps65132_enable();
 
 	MDELAY(15);
 	SET_RESET_PIN(1);
@@ -1616,15 +1555,11 @@ static void lcm_resume(void)
 		push_table(lcm_cabc_on_initialization_setting, sizeof(lcm_cabc_on_initialization_setting) / sizeof(struct LCM_setting_table), 1);
 	}
 }
+static unsigned int lcm_compare_id(void) {
 
-static unsigned int lcm_compare_id(void)
-{
 	unsigned char buffer[8];
 	unsigned int array[16];
 	unsigned int id = 0;
-
-    printk("Enter LCM Compare ID\n");
-
 
 	SET_RESET_PIN(1);
 	MDELAY(50);
@@ -1647,19 +1582,14 @@ static unsigned int lcm_compare_id(void)
 
 	id = buffer[0];
 
-	return (LCM_ID == id) ? 1 : 0;
+	return LCM_ID == id;
 }
 
 static void lcm_cabc_enable_cmdq(void* handle,unsigned int enable)
 {
-    printk("Enter LCM Cabc Enable\n");
-
-	if(enable == 0)
-	{
+	if(enable == 0) {
 		push_table(lcm_cabc_off_setting, sizeof(lcm_cabc_off_setting) / sizeof(struct LCM_setting_table), 1);
-	}
-	else
-	{
+	} else {
 		push_table(lcm_cabc_on_setting, sizeof(lcm_cabc_on_setting) / sizeof(struct LCM_setting_table), 1);
 	}
 }
@@ -1667,8 +1597,6 @@ static void lcm_cabc_enable_cmdq(void* handle,unsigned int enable)
 static void lcm_setbacklight_cmdq(void* handle, unsigned int level)
 {
 	unsigned int mapped_level = 0;
-
-    printk("Enter LCM Backlight CMDQ\n");
 
 	mapped_level = level;
 	
