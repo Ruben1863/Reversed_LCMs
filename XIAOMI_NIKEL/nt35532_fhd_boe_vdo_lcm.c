@@ -29,9 +29,7 @@
 #include <linux/list.h>
 #include <linux/i2c.h>
 #include <linux/irq.h>
-/*#include <linux/jiffies.h>*/
 #include <linux/uaccess.h>
-/*#include <linux/delay.h>*/
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/platform_device.h>
@@ -1531,29 +1529,25 @@ static void lcm_resume(void)
 	SET_RESET_PIN(1);
 	MDELAY(20);
 
-	if(cabc_enable_flag == 0) {
-		if(last_backlight_level <= 32) {
-			if(backlight_array_num != 0) {
-				lcm_initialization_setting[backlight_array_num].para_list[0] = last_backlight_level;
-			}
-		} else {
-			if(backlight_array_num != 0) {
-				lcm_initialization_setting[backlight_array_num].para_list[0] = 32;
-			}
-		}
-		push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1);
-	} else {
-		if(last_backlight_level <= 32) {
-			if(backlight_array_num != 0) {
-				lcm_cabc_on_initialization_setting[backlight_array_num].para_list[0] = last_backlight_level;
-			}
-		} else {
-			if(backlight_array_num != 0) {
-				lcm_cabc_on_initialization_setting[backlight_array_num].para_list[0] = 32;
-			}
-		}
-		push_table(lcm_cabc_on_initialization_setting, sizeof(lcm_cabc_on_initialization_setting) / sizeof(struct LCM_setting_table), 1);
-	}
+    if (cabc_enable_flag == 0) {
+	    if (last_backlight_level > 32) {
+		    if (backlight_array_num != 0) {
+			    lcm_initialization_setting[backlight_array_num].para_list[0] = 32;
+			    push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1);
+		    }
+	    } else if (backlight_array_num) {
+		    lcm_initialization_setting[backlight_array_num].para_list[0] = last_backlight_level;
+	    }
+	    push_table(lcm_initialization_setting, sizeof(lcm_initialization_setting) / sizeof(struct LCM_setting_table), 1);
+    } else {
+	    if (last_backlight_level > 32) {
+		    if (backlight_array_num != 0)
+			    lcm_cabc_on_initialization_setting[backlight_array_num].para_list[0] = 32;
+	    } else if (backlight_array_num != 0) {
+		    lcm_cabc_on_initialization_setting[backlight_array_num].para_list[0] = last_backlight_level;
+	    }
+	    push_table(lcm_cabc_on_initialization_setting, sizeof(lcm_cabc_on_initialization_setting) / sizeof(struct LCM_setting_table), 1);
+    }
 }
 static unsigned int lcm_compare_id(void) {
 
@@ -1629,8 +1623,8 @@ LCM_DRIVER nt35532_fhd_boe_vdo_lcm_drv =
 	.get_params     	= lcm_get_params,
  	.init           	= lcm_init,
 	.suspend       	 	= lcm_suspend,
-	.resume				= lcm_resume,
-	.compare_id			= lcm_compare_id,
+	.resume			= lcm_resume,
+	.compare_id		= lcm_compare_id,
 	.set_backlight_cmdq	= lcm_setbacklight_cmdq,
 	.enable_cabc_cmdq	= lcm_cabc_enable_cmdq,
 };
